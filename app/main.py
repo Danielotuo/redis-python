@@ -1,4 +1,5 @@
 import socket
+import threading
 
 
 def main():
@@ -11,8 +12,10 @@ def main():
         client_socket, client_address = server_socket.accept()
         print(f"Accepted connection from {client_address}")
 
-        # Handle the client in a separate thread or process if needed
-        handle_client(client_socket)
+        # Create a new thread to handle the client
+        client_thread = threading.Thread(
+            target=handle_client, args=(client_socket,))
+        client_thread.start()
 
 
 def handle_client(client_socket):
