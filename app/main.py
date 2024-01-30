@@ -30,17 +30,25 @@ def handle_client(client_socket):
         # Decode data from bytes to string
         command = data.decode('utf-8').strip()
 
-        # For simplicity, respond to the PING command
-        if command.lower() == '*1\r\n$4\r\nping':
-            response = b"+PONG\r\n"
-            client_socket.sendall(response)
+        # For simplicity, respond to the ECHO command
+        if command.startswith('*'):
+            # Parse RESP array
+            parts = command.split('\r\n')
+            num_elements = int(parts[0][1:])
+            elements = parts[1:-1]
+
+            # Check if it's an ECHO command
+            if num_elements == 5 and elements[1] == '$4' and elements[3] == '$3' and elements[2].lower() == 'echo':
+                echoed_message = elements[4]
+                response = f"${len(echoed_message)}\r\n{
+                    echoed_message}\r\n".encode('utf-8')
+                client_socket.sendall(response)
+            else:
+                response = b"-ERR Unknown command\r\n"
+                client_socket.sendall(response)
         else:
             response = b"-ERR Unknown command\r\n"
             client_socket.sendall(response)
 
     # Close the client socket when the communication is done
     client_socket.close()
-
-
-if __name__ == "__main__":
-    main()
