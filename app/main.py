@@ -27,9 +27,26 @@ def handle_client(client_socket):
         if not data:
             break
 
-        # For simplicity, respond with +PONG\r\n for any input
-        response = b"+PONG\r\n"
-        client_socket.sendall(response)
+        # Decode data from bytes to string
+        command = data.decode('utf-8').strip()
+
+        # For simplicity, respond to the ECHO command
+        if command.startswith('*'):
+            # Parse RESP array
+            parts = command.split('\r\n')
+            num_elements = int(parts[0][1:])
+            elements = parts[1:-1]
+
+            # Check if it's an ECHO command
+            if num_elements == 3 and elements[1] == '$4' and elements[3] == '$3' and elements[2].lower() == 'echo':
+                response = elements[4].encode('utf-8') + b"\r\n"
+                client_socket.sendall(response)
+            else:
+                response = b"-ERR Unknown command\r\n"
+                client_socket.sendall(response)
+        else:
+            response = b"-ERR Unknown command\r\n"
+            client_socket.sendall(response)
 
     # Close the client socket when the communication is done
     client_socket.close()
