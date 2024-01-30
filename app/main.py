@@ -3,7 +3,7 @@ import threading
 
 
 def main():
-    print("Logs from your program will appear here!")
+    print("Logs from  program will appear here!")
 
     server_socket = socket.create_server(("localhost", 6379), reuse_port=True)
     print("Server listening on localhost:6379")
