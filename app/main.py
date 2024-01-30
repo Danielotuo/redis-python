@@ -16,9 +16,17 @@ def main():
 
 
 def handle_client(client_socket):
-    # For simplicity, respond with +PONG\r\n for the PING command
-    response = b"+PONG\r\n"
-    client_socket.sendall(response)
+    while True:
+        # Receive data from the client
+        data = client_socket.recv(1024)  # Adjust the buffer size as needed
+
+        # Check if the client has closed the connection
+        if not data:
+            break
+
+        # For simplicity, respond with +PONG\r\n for any input
+        response = b"+PONG\r\n"
+        client_socket.sendall(response)
 
     # Close the client socket when the communication is done
     client_socket.close()
