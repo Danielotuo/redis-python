@@ -42,6 +42,7 @@ def handle_client(client_socket):
                 echoed_message = elements[4]
                 response = f"${len(echoed_message)}\r\n{
                     echoed_message}\r\n".encode('utf-8')
+
                 client_socket.sendall(response)
             else:
                 response = b"-ERR Unknown command\r\n"
