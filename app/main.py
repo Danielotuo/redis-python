@@ -31,7 +31,7 @@ def handle_client(client_socket):
         command = data.decode('utf-8').strip()
 
         # For simplicity, respond to the PING command
-        if command.lower() == 'ping':
+        if command.lower() == '*1\r\n$4\r\nping':
             response = b"+PONG\r\n"
             client_socket.sendall(response)
         else:
